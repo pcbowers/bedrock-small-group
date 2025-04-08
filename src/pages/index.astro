@@ -1,1 +1,50 @@
-<h1>Hello!</h1>
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const guides = await getCollection('guide');
+const sortedGuides = guides.sort((a, b) => {
+  const timeDiff = a.data.date.getTime() - b.data.date.getTime();
+  const weekDiff = a.data.week - b.data.week;
+  const titleDiff = a.data.title.localeCompare(b.data.title);
+  return timeDiff || weekDiff || titleDiff;
+});
+const guidesByMonth = sortedGuides.reduce(
+  (acc, guide) => {
+    const month = guide.data.month || 'Uncategorized';
+    const bucket = acc.find(bucket => bucket.month === month);
+    if (bucket) bucket.guides.push(guide);
+    else acc.push({ month: month, guides: [guide] });
+    return acc;
+  },
+  [] as Array<{ month: string; guides: Array<(typeof guides)[number]> }>
+);
+---
+
+<BaseLayout title="Bedrock Small Group" includeBackButton={false}>
+  <h1>Bedrock Small Group</h1>
+  <p>
+    This page contains a list of all the converted discussion guides for Bedrock Small Groups. If you think a discussion
+    guide should be added, reach out to Chris Bowers!
+  </p>
+
+  <ul>
+    {
+      guidesByMonth.map(({ month, guides }) => (
+        <li>
+          <h2 class="capitalize mt-0 mb-0">{month}</h2>
+          <ul>
+            {guides.map(guide => (
+              <li>
+                <a href={`/guide/${guide.data.month}/${guide.data.week}`}>
+                  <h3 class="mt-0 mb-0">{guide.data.title}</h3>
+                </a>
+                <p class="mt-0 mb-0">{guide.data.description}</p>
+              </li>
+            ))}
+          </ul>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
