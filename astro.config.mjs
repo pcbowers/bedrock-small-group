@@ -8,6 +8,5 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()]
   },
-  base: '/bedrock-small-group/',
-  trailingSlash: 'always'
+  base: '/bedrock-small-group'
 });
