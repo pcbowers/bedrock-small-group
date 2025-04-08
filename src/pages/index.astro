@@ -36,7 +36,7 @@ const guidesByMonth = sortedGuides.reduce(
           <ul>
             {guides.map(guide => (
               <li>
-                <a href={`${import.meta.env.BASE_URL}/guide/${guide.data.month}/${guide.data.week}`}>
+                <a href={`./guide/${guide.data.month}/${guide.data.week}`}>
                   <h3 class="mt-0 mb-0">{guide.data.title}</h3>
                 </a>
                 <p class="mt-0 mb-0">{guide.data.description}</p>
